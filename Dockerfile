@@ -19,12 +19,11 @@ RUN git clone https://github.com/vhelin/wla-dx /wla-dx\
 
 RUN git clone https://github.com/boldowa/snesbrr /snesbrr
 
-	#&& git checkout 97603072d8ada466361c2a9763447882ebca50c3\
 RUN git clone https://github.com/alekmaul/pvsneslib /c/snesdev\
 	&& cd /c/snesdev\
 	&& cp /c/snesdev/devkitsnes/snes_rules /c/snesdev/devkitsnes/snes_rules.orig\
 	&& sed 's:\\\\:/:g' /c/snesdev/devkitsnes/snes_rules.orig >/c/snesdev/devkitsnes/snes_rules\
-	&& cd /c/snesdev/compiler/tcc-65816/\
+	&& cd /c/snesdev/compiler/tcc-65816\
 	&& rm -rf 816-tcc.exe\
 	&& make 816-tcc.exe\
 	&& cp 816-tcc.exe /c/snesdev/devkitsnes/bin/816-tcc
