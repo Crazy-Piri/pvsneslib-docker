@@ -31,9 +31,6 @@ RUN git clone https://github.com/alekmaul/pvsneslib /c/snesdev\
 # /c/snesdev/devkitsnes/bin/816-opt.py is expecting python to be in /c/Python27/python
 RUN mkdir -p /c/Python27/ && ln -sf /usr/bin/python /c/Python27/python
 
-# smconv is expecting g++ in /e/MinGW32/bin/g++
-RUN mkdir -p /e/MinGW32/bin/ && ln -sf /usr/bin/g++ /e/MinGW32/bin/g++
-
 RUN cd /c/snesdev/tools/constify \
 	&& cp Makefile Makefile.orig\
 	&& sed 's:-lregex::g' Makefile.orig >Makefile\
