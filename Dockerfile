@@ -11,7 +11,7 @@ FROM i386/ubuntu:trusty
 RUN apt-get update && apt-get install make python linux-libc-dev binutils gcc g++ git wget cmake -y 
 
 RUN git clone https://github.com/vhelin/wla-dx /wla-dx\
-	&& cd /wla-dx/\
+	&& cd /wla-dx\
 	&& mkdir build && cd build\
 	&& cmake ..\
 	&& cmake --build . --config Release\
