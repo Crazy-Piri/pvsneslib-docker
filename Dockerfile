@@ -1,7 +1,7 @@
 # To create the image:
-#   $ docker build -t amiga -f amiga.Dockerfile .
+#   $ docker build -t snes -f Dockerfile .
 # To run the container:
-#   $ docker run -v ${PWD}:/src/ -it amiga
+#   $ docker run -v ${PWD}:/src/ -it snes
 
 # i386 because if we use 64bit gcc some tools segault.
 # trusty because some tools don't compile with latest gcc.
@@ -24,9 +24,10 @@ RUN git clone https://github.com/alekmaul/pvsneslib /c/snesdev\
 	&& cp /c/snesdev/devkitsnes/snes_rules /c/snesdev/devkitsnes/snes_rules.orig\
 	&& sed 's:\\\\:/:g' /c/snesdev/devkitsnes/snes_rules.orig >/c/snesdev/devkitsnes/snes_rules\
 	&& cd /c/snesdev/compiler/tcc-65816\
-	&& rm -rf 816-tcc.exe\
-	&& make 816-tcc.exe\
-	&& cp 816-tcc.exe /c/snesdev/devkitsnes/bin/816-tcc
+	&& rm -rf 816-tcc\
+	&& ./configure\
+	&& make\
+	&& cp 816-tcc /c/snesdev/devkitsnes/bin/816-tcc
 
 # /c/snesdev/devkitsnes/bin/816-opt.py is expecting python to be in /c/Python27/python
 RUN mkdir -p /c/Python27/ && ln -sf /usr/bin/python /c/Python27/python
@@ -35,23 +36,23 @@ RUN cd /c/snesdev/tools/constify \
 	&& cp Makefile Makefile.orig\
 	&& sed 's:-lregex::g' Makefile.orig >Makefile\
 	&& make all \
-	&& cp constify.exe /bin/constify
+	&& cp constify /bin/constify
 
 WORKDIR /c/snesdev/tools/snestools
 RUN make all
-RUN cp snestools.exe /c/snesdev/devkitsnes/tools/snestools
+RUN cp snestools /c/snesdev/devkitsnes/tools/snestools
 
 WORKDIR /c/snesdev/tools/gfx2snes
 RUN make all
-RUN cp gfx2snes.exe /c/snesdev/devkitsnes/tools/gfx2snes
+RUN cp gfx2snes /c/snesdev/devkitsnes/tools/gfx2snes
 
 WORKDIR /c/snesdev/tools/bin2txt
 RUN make all
-RUN cp bin2txt.exe /c/snesdev/devkitsnes/tools/bin2txt
+RUN cp bin2txt /c/snesdev/devkitsnes/tools/bin2txt
 
 WORKDIR /c/snesdev/tools/smconv
 RUN make all
-RUN cp smconv.exe /c/snesdev/devkitsnes/tools/smconv
+RUN cp smconv /c/snesdev/devkitsnes/tools/smconv
 
 WORKDIR /snesbrr/src
 RUN make all
