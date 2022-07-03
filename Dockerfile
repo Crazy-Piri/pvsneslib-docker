@@ -10,13 +10,6 @@ FROM i386/ubuntu:trusty
 
 RUN apt-get update && apt-get install make python linux-libc-dev binutils gcc g++ git wget cmake -y 
 
-RUN git clone https://github.com/vhelin/wla-dx /wla-dx\
-	&& cd /wla-dx\
-	&& mkdir build && cd build\
-	&& cmake ..\
-	&& cmake --build . --config Release\
-	&& cmake -P cmake_install.cmake
-
 RUN git clone https://github.com/boldowa/snesbrr /snesbrr
 
 RUN git clone https://github.com/alekmaul/pvsneslib /c/snesdev\
@@ -28,6 +21,15 @@ RUN git clone https://github.com/alekmaul/pvsneslib /c/snesdev\
 	&& ./configure\
 	&& make\
 	&& cp 816-tcc /c/snesdev/devkitsnes/bin/816-tcc
+	
+RUN git clone https://github.com/vhelin/wla-dx /wla-dx\
+	&& cd /wla-dx\
+	&& mkdir build && cd build\
+	&& cmake ..\
+	&& cmake --build . --config Release\
+	&& cmake -P cmake_install.cmake\
+	&& cd binaries\
+	&& cp wla-65816 wla-spc700 wlalink /c/snesdev/devkitsnes/bin
 
 # /c/snesdev/devkitsnes/bin/816-opt.py is expecting python to be in /c/Python27/python
 RUN mkdir -p /c/Python27/ && ln -sf /usr/bin/python /c/Python27/python
@@ -36,7 +38,9 @@ RUN cd /c/snesdev/tools/constify \
 	&& cp Makefile Makefile.orig\
 	&& sed 's:-lregex::g' Makefile.orig >Makefile\
 	&& make all \
-	&& cp constify /bin/constify
+	&& cp constify /c/snesdev/devkitsnes/bin/constify
+	
+RUN mkdir /c/snesdev/devkitsnes/tools
 
 WORKDIR /c/snesdev/tools/snestools
 RUN make all
@@ -63,5 +67,8 @@ RUN chmod 777 /c/snesdev/devkitsnes/bin/*
 ENV PATH="/c/snesdev/devkitsnes/bin:${PATH}"
 
 ENV PVSNESLIB_HOME="/c/snesdev/"
+
+RUN cd /c/snesdev/pvsneslib\
+	&& make
 
 WORKDIR /src
